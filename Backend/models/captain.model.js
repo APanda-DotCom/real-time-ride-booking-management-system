@@ -1,4 +1,7 @@
 const mongoose=require('mongoosr');
+const bcrypt= require('bcrypt');
+const jwt=require('jsonwebtoken');
+
 
 const captainSchema = new mongoose.schema({
     fullname:{
@@ -66,3 +69,17 @@ const captainSchema = new mongoose.schema({
         },
      }
 })
+
+captainSchema.methods.generateAuthToken=function(){
+   const token=jwt.sign({_id:this._id},process.env.jwt_secret,{expiresIn:'24h'})
+   return token;
+}
+captainSchema.methods.comparePassword=async function(password){
+   return await bcrypt.compare(password,this.password);
+}
+captainSchema.static.hashpassword=async function(password){
+   return await bcrypt.hash(password,10);
+}
+const captainModel= moonges.model('captain,captainSchema')
+
+module.exports= captainModel;
