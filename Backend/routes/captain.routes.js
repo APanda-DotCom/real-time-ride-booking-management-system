@@ -3,9 +3,10 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const captainController = require('../controllers/captain.controller');
-const { authMiddleware, authCaptain } = require('../middlewares/auth.middleware');
+const { authUser, authCaptain } = require('../middlewares/auth.middleware');
 
-router.post('/register',
+router.post(
+  '/register',
   [
     body('email').isEmail().withMessage('Invalid email'),
     body('fullname.firstname')
@@ -27,7 +28,7 @@ router.post('/register',
       .isIn(['car', 'motorcycle', 'auto'])
       .withMessage('Invalid vehicle type'),
   ],
-  captainController.registerCaptain   // ✅ spelling fixed
+  captainController.registerCaptain
 );
 
 router.post(
@@ -43,15 +44,13 @@ router.post(
 
 router.get(
   '/profile',
-  authMiddleware,
-  authCaptain,
+  authCaptain, 
   captainController.getCaptainProfile
 );
 
 router.get(
   '/logout',
-  authMiddleware,
-  authCaptain,
+  authCaptain, 
   captainController.logoutCaptain
 );
 

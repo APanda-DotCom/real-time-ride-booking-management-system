@@ -269,7 +269,7 @@ Notes & Implementation pointers
 - The route file contains the validation logic; consult [Backend/routes/captain.routes.js](Backend/routes/captain.routes.js) for exact rules.
 - Token generation is handled in the model (e.g., a `generateAuthToken` method on the captain model); ensure `process.env.JWT_SECRET` is set.
 - Controller functions referenced in routes (e.g., register, login, logout, getProfile) are implemented in [Backend/controllers/captain.controller.js](Backend/controllers/captain.controller.js).
-- The service layer (e.g., `createCaptain` in [Backend/services/captain.service.js](Backend/services/captain.service.js)) enforces required fields and performs DB create operations.
+- The service layer (e.g., `createCaptain` in [Backend/services/captain.service.js](Backend/services/captain.service.js)) required fields and performs DB create operations
 
 Examples
 - Register (curl):
