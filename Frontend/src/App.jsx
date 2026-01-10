@@ -7,6 +7,7 @@ import UserLogin from './pages/UserLogin.jsx'
 import UserSignup from './pages/UserSignup.jsx'
 import Home from './pages/Home.jsx'
 import UserProtectWrapper from './pages/UserProtectWrapper.jsx'
+import UserLogout from './pages/UserLogout.jsx'
 
 const App = () => {
   
@@ -23,8 +24,13 @@ const App = () => {
             <Home/>
           </UserProtectWrapper>
          }/>
-      </Routes>
-
+      
+      <Route path='/user/logout'element={
+      <UserProtectWrapper>
+        <UserLogout/>
+      </UserProtectWrapper>
+      }/>
+   </Routes>
   )
 }
 

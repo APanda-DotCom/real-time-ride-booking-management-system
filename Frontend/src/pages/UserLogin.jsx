@@ -32,7 +32,7 @@ const UserLogin = () => {
   );
 
   setUser(response.data.user);
-  localStorage.setItem('userToken', response.data.token);
+  localStorage.setItem('token', response.data.token);
   navigate('/home');
 } catch (error) {
   console.log(error.response?.data);
