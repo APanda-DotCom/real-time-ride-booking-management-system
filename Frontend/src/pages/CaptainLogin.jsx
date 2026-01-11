@@ -1,26 +1,48 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import { Link } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import UberLogo from '../assets/uber-driver-svgrepo-com.svg'
-
+import { CaptainDataContext } from '../context/CaptainContext'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const CaptainLogin = () => {
 
   const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
-    const [/*captainData*/, setCaptainData] = useState({})
-  
-    const handlerSubmit = (e) => {
-      e.preventDefault()
+   
+    // eslint-disable-next-line no-unused-vars
+    const {captain,setCaptain}=React.useContext(CaptainDataContext)
 
-      setCaptainData({
-        Email:email,
-        Password:password
-      })
-      setEmail('')
-      setPassword('')
+    const navigate=useNavigate();
+  const handlerSubmit = async (e) => {
+  e.preventDefault()
+
+  const captainData = {
+    email: email,
+    password: password
+  }
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/captains/login`,
+      captainData
+    );
+
+    if (response.status === 200) {
+      const data = response.data
+      setCaptain(data.captain)
+      localStorage.setItem('token', data.token)  // Fixed: setItem instead of getItem
+      navigate('/captain-home')  // Fixed: navigate to captain-home
     }
+  } catch (error) {
+    console.error('Login error:', error.response?.data || error.message)
+  }
+
+  setEmail('')
+  setPassword('')
+}
   return (
     <div className="p-7 h-screen flex flex-col justify-between bg-white">
       
