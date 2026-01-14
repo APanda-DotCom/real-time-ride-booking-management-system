@@ -4,6 +4,10 @@ import LocationGif from '../assets/Location.gif'
 import gsap from "gsap";
 import { FiChevronDown } from "react-icons/fi";
 import LocationPanel from './components/LocationPanel';
+import UberXL from '../assets/UberXL_Black_v2.png';
+import { FaUser } from "react-icons/fa";
+
+
 
 const Home = () => {
   const [pickup, setPickup] = useState('')
@@ -80,6 +84,20 @@ const Home = () => {
         <div ref={panelRef} className='bg-white h-0'>
           <LocationPanel/>
         </div>
+          <div className='fixed w-full z-10 bottom-0 bg-white p-3'>
+            <div className='flex border-2  border-black rounded-xl w-full p-3 items-center'>
+              <img className='h-20'src={UberXL} alt="" srcset="" />
+              <div className='w-1/2'>
+              <h4 className='font-medium text-base flex gap-2 '> UberGo <span className='flex gap-2'><FaUser/>4</span></h4>
+              <h5 className='font-medium text-sm'>2 mins away</h5>
+              <p className='font-normal text-xs text-gray-600'>Affrodable compact</p>
+
+              </div>
+              <h2 className='text-xl font-semibold flex' >₹193.20</h2>
+            </div>
+
+          </div>
+
       </div>
     </div>
   )
