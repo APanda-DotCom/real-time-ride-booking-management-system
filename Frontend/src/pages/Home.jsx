@@ -8,7 +8,8 @@ import { FiChevronDown } from "react-icons/fi";
 import LocationPanel from "../components/LocationPanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmedVehicle from '../components/ConfirmedVehicle';
-
+import LookingForDriver from '../components/LookingForDriver';
+import WaitingForDriver from '../components/WaitingForDriver';
 
 
 
@@ -19,10 +20,14 @@ const Home = () => {
   const panelRef = useRef(null)
   const vehiclePanelRef = useRef(null)
   const confirmRidePanelRef = useRef(null)
+  const  LookingDriverRef = useRef(null)
+  const  WaitingDriverRef = useRef(null)
   const panelCloseRef = useRef(null)
   const[vehiclePanel,setVehiclepanel]=useState(false)
   const [confirmRidePanel,setConfirmRidePanel]=useState(false)
-  
+  const [LookingDriver,setLookingDriver]=useState(false)
+  const [WaitingDriver,setWaitingDriver]=useState(false)
+  // eslint-disable-next-line no-unused-vars
   const handlerSubmit = (e) => {
     e.preventDefault()
   }
@@ -73,6 +78,30 @@ const Home = () => {
     }
   } ,[confirmRidePanel])
 
+  useGSAP(function(){
+    if(LookingDriver){
+      gsap.to(LookingDriverRef.current,{
+           transform:'translatey(0)'
+     }) 
+    }else{
+     gsap.to(LookingDriverRef.current,{
+          transform:'translatey(100%)'
+     })
+    }
+  } ,[LookingDriver])
+
+  useGSAP(function(){
+    if(WaitingDriver){
+      gsap.to(WaitingDriverRef.current,{
+           transform:'translatey(0)'
+     }) 
+    }else{
+     gsap.to(WaitingDriverRef.current,{
+          transform:'translatey(100%)'
+     })
+    }
+  } ,[WaitingDriver])
+
   return (
     <div className='h-screen overflow-hidden relative'>
       <img className='w-16 absolute left-5 top-5'
@@ -122,8 +151,14 @@ const Home = () => {
 
           </div>
             <div ref={confirmRidePanelRef}className='fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8'>
-            <ConfirmedVehicle setConfirmRidePanel={setConfirmRidePanel}/>
+            <ConfirmedVehicle setConfirmRidePanel={setConfirmRidePanel}setLookingDriver={setLookingDriver}/>
 
+          </div>
+          <div ref={LookingDriverRef} className="fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8">
+            <LookingForDriver  setLookingDriver={setLookingDriver}/>
+          </div>
+          <div ref={WaitingDriverRef}className="fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8">
+            <WaitingForDriver setWaitingDriver={setWaitingDriver} />
           </div>
       </div>
     </div>
