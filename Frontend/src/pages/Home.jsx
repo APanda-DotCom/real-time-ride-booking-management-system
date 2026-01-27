@@ -30,6 +30,9 @@ const Home = () => {
   const [confirmRidePanel,setConfirmRidePanel]=useState(false)
   const [LookingDriver,setLookingDriver]=useState(false)
   const [WaitingDriver,setWaitingDriver]=useState(false)
+  const [fare,setFare]=useState({})
+
+  const [vehicleType,setVehicleType]= useState(null) 
 
 const handelPickupChange = async(e) => {
     setPickup(e.target.value)
@@ -157,6 +160,41 @@ const handelDestinationChange = async(e) => {
     }
   } ,[WaitingDriver])
 
+
+  async function findTrip(){
+    setVehiclepanel(true)
+    setPanelOpen(false)
+
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/get-fare`, {
+        params: {
+          pickup,
+          destination
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      setFare(response.data)
+    } catch (error) {
+      console.log("Error fetching fare:", error.response?.data || error.message)
+    }
+  }
+
+
+  async function  createRide(){
+    axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
+      pickup,
+      destination,
+      vehicleType
+    },{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+     console.log("ride created successfully")
+  }
+
   return (
     <div className='h-screen overflow-hidden relative'>
       <img className='w-16 absolute left-5 top-5'
@@ -197,6 +235,9 @@ const handelDestinationChange = async(e) => {
               placeholder="Enter your Destination"
             />
           </form>
+
+          <button  onClick={findTrip} className="w-full mt-4 bg-black text-white py-2 rounded-lg
+                       font-semibold text-base hover:bg-gray-900 transition">Find Trip</button>
         </div>
         <div ref={panelRef} className='bg-white h-0'>
           <LocationPanel 
@@ -211,15 +252,28 @@ const handelDestinationChange = async(e) => {
           /> 
         </div> 
           <div ref={vehiclePanelRef}className='fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8'>
-            <VehiclePanel setConfirmRidePanel={setConfirmRidePanel}setVehiclePanel={setVehiclepanel}/>
+            <VehiclePanel 
+            selectVehicle={setVehicleType}
+            fare={fare} setConfirmRidePanel={setConfirmRidePanel}setVehiclePanel={setVehiclepanel}/>
 
           </div>
             <div ref={confirmRidePanelRef}className='fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8'>
-            <ConfirmedVehicle setConfirmRidePanel={setConfirmRidePanel}setLookingDriver={setLookingDriver}/>
+            <ConfirmedVehicle 
+            createRide={createRide}
+            pickup={pickup}
+            destination={destination}
+            fare={fare}
+            vehicleType={vehicleType}
+            setConfirmRidePanel={setConfirmRidePanel}setLookingDriver={setLookingDriver}/>
 
           </div>
           <div ref={LookingDriverRef} className="fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8">
-            <LookingForDriver  setLookingDriver={setLookingDriver}/>
+            <LookingForDriver 
+            createRide={createRide}
+            pickup={pickup}
+            destination={destination}
+            fare={fare}
+            vehicleType={vehicleType} setLookingDriver={setLookingDriver}/>
           </div>
           <div ref={WaitingDriverRef}className="fixed w-full z-10 bottom-0 translate-y-full  bg-white px-3 py-8"> 
             <WaitingForDriver setWaitingDriver={setWaitingDriver} />
