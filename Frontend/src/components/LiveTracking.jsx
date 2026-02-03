@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 const containerStyle = {
   width: '100%',
-  height: '400px'
+  height: '100%'
 };
 const center = {
   lat: -3.745,
@@ -38,7 +38,7 @@ const LiveTracking = () => {
             });
         } 
         updatePosition();
-        const intervalId = setInterval(updatePosition, 5000); // Update every 5 seconds
+        const intervalId = setInterval(updatePosition, 1000); // Update every 5 seconds
 
         return () => clearInterval(intervalId); // Cleanup on unmount
     }, []);
