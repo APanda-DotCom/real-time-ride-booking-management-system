@@ -7,6 +7,7 @@ module.exports.getCoordinates = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+  
 
   const { address } = req.query;
 
@@ -37,7 +38,7 @@ module.exports.getDistanceTime = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
   }
-}; // ✅ THIS WAS MISSING
+}; 
 
 module.exports.getAutoSuggestion = async (req, res) => {
   try {
