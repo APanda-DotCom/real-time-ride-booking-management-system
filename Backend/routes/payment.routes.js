@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/auth.middleware.js');
 const router = express.Router();
 
 /**
- * ================================
+ 
  * CREATE RAZORPAY ORDER (USER)
  * ================================
  * User starts online payment
