@@ -84,7 +84,7 @@ const getCaptainInTheRadius = async (lat, lng, radius) => {
     });
 };
 
-/* ✅ EXPORT EVERYTHING PROPERLY */
+
 module.exports = {
     getCoordinates,
     getDistanceTime,
