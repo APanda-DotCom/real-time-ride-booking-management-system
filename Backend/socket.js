@@ -1,7 +1,6 @@
 const socketIo = require('socket.io');
 const userModel = require('./models/user.model');
 const captainModel = require('./models/captain.model');
-const rideModel = require('./models/ride.model'); // your ride model
 
 let io;
 
@@ -14,30 +13,28 @@ function initializeSocket(server) {
   });
 
   io.on('connection', (socket) => {
-    console.log(`Client connected: ${socket.id}`);
+    console.log('Client connected:', socket.id);
 
-    // --- Join socket ---
-    socket.on('join', async (data) => {
-      const { userId, userType } = data;
+    // JOIN SOCKET
+    socket.on('join', async ({ userId, userType }) => {
       try {
         if (userType === 'user') {
           await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
-        } else if (userType === 'captain') {
+        }
+
+        if (userType === 'captain') {
           await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
         }
-        console.log(`${userType} joined: ${userId}`);
+
+        console.log(`${userType} joined → ${userId}`);
       } catch (err) {
-        console.error('Join error:', err);
+        console.error('Join error:', err.message);
       }
     });
 
-    // --- Update captain location ---
-    socket.on('update-location-captain', async (data) => {
-      const { userId, location } = data;
-
-      if (!location || !location.lat || !location.lng) {
-        return socket.emit('error', { message: 'Invalid location data' });
-      }
+    // UPDATE CAPTAIN LOCATION
+    socket.on('update-location-captain', async ({ userId, location }) => {
+      if (!location?.lat || !location?.lng) return;
 
       try {
         await captainModel.findByIdAndUpdate(userId, {
@@ -47,41 +44,20 @@ function initializeSocket(server) {
           }
         });
       } catch (err) {
-        console.error('Update location error:', err);
-      }
-    });
-
-    // --- Send new ride to captain ---
-    socket.on('send-ride-to-captain', async (rideId) => {
-      try {
-        const ride = await rideModel.findById(rideId).populate('user'); // Populate user info
-        if (!ride) return;
-
-        // Get all captain sockets (or filter by nearby)
-        const captains = await captainModel.find({ socketId: { $exists: true } });
-        captains.forEach(captain => {
-          if (captain.socketId) {
-            io.to(captain.socketId).emit('new-ride', ride);
-          }
-        });
-
-      } catch (err) {
-        console.error('Send ride error:', err);
+        console.error('Location update error:', err.message);
       }
     });
 
     socket.on('disconnect', () => {
-      console.log(`Client disconnected: ${socket.id}`);
+      console.log('Socket disconnected:', socket.id);
     });
   });
 }
 
-// --- Utility to send message to a specific socket ---
-const sendMessageToSocketId = (socketId, messageObject) => {
-  if (io) {
-    io.to(socketId).emit(messageObject.event, messageObject.data);
-  } else {
-    console.log('Socket.io not initialized');
+// SEND MESSAGE TO ONE SOCKET
+const sendMessageToSocketId = (socketId, { event, data }) => {
+  if (io && socketId) {
+    io.to(socketId).emit(event, data);
   }
 };
 
